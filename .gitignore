@@ -3,6 +3,6 @@ __pycache__/
 venv/
 .env
 output/
-DS_Store
+.DS_Store
 vosk-model-small-pt-0.3/
 models/
