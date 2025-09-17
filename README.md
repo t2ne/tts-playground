@@ -1,6 +1,6 @@
 # TTS + Lipsync Avatar Project
 
-## ⚠️ *Talking face Output + Video and Audio merge not Implemented*
+## ⚠️ *Talking face Output + Video and Audio merge + Website not Implemented*
 
 ## Overview
 This project creates a talking avatar from a single face image using:
