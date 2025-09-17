@@ -3,11 +3,11 @@ import os
 
 load_dotenv()
 
-# API key for Sync.so
-SYNCSO_API_KEY = os.getenv("SYNCSO")
+# Sync.so API key
+SYNC_API_KEY = os.getenv("SYNCSO")
 
-# Piper TTS voice model
+# Piper TTS voice
 PIPER_VOICE = "voices/pt_PT-tuga-medium.onnx"
 
-# Base avatar video (without speech)
-AVATAR_VIDEO = "media/face.mp4"
+# Face image/video path
+AVATAR_FACE = "media/face.jpg"  # or .mp4 if you have a neutral video

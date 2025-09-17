@@ -1,19 +1,25 @@
-from modules import stt, tts, lipsync, chatbot
+from modules import stt, tts, lipsync
+import os
+import threading
+from http.server import HTTPServer, SimpleHTTPRequestHandler
 
-def main():
-    # Step 1: Listen to user
+# Start a simple HTTP server to serve local files for Sync.so
+def start_http_server():
+    server = HTTPServer(('localhost', 8000), SimpleHTTPRequestHandler)
+    print("🌐 HTTP server started at http://localhost:8000")
+    server.serve_forever()
+
+if __name__ == "__main__":
+    # Start HTTP server in a background thread
+    threading.Thread(target=start_http_server, daemon=True).start()
+
+    # Step 1: Record & transcribe speech
     user_text = stt.transcribe()
     print("👤 You said:", user_text)
 
-    # Step 2: Chatbot response
-    response_text = chatbot.get_response(user_text)
-    print("🤖 Bot:", response_text)
+    # Step 2: TTS with Piper
+    audio_file = tts.speak(user_text)
 
-    # Step 3: TTS (Piper)
-    audio_file = tts.speak(response_text)
-
-    # Step 4: Lip Sync (Sync.so API)
-    lipsync.animate(audio_file)
-
-if __name__ == "__main__":
-    main()
+    # Step 3: Lip sync
+    video_url = lipsync.generate_lipsync(audio_file)
+    print("🎬 Your lipsynced video is at:", video_url)

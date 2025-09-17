@@ -1,20 +1,15 @@
 import vosk, sys, sounddevice as sd, queue, json
 
 q = queue.Queue()
-model = vosk.Model("vosk-model-small-pt-0.3")  # Portuguese model
+model = vosk.Model("vosk-model-small-pt-0.3")
 samplerate = 16000
 device = None
-
-def callback(indata, frames, time, status):
-    if status:
-        print(status, file=sys.stderr)
-    q.put(bytes(indata))
 
 def transcribe():
     rec = vosk.KaldiRecognizer(model, samplerate)
     with sd.RawInputStream(samplerate=samplerate, blocksize=8000,
                            device=device, dtype='int16',
-                           channels=1, callback=callback):
+                           channels=1, callback=lambda indata, f, t, s: q.put(bytes(indata))):
         print("🎤 Fala agora (CTRL+C para parar)...")
         while True:
             data = q.get()
