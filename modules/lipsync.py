@@ -2,7 +2,9 @@ import time
 from sync import Sync
 from sync.common import Audio, GenerationOptions, Video
 from sync.core.api_error import ApiError
-from config import SYNC_API_KEY, AVATAR_FACE
+from config import SYNC_API_KEY, AVATAR_FACE, OUTPUT_DIR
+import os
+import requests
 
 client = Sync(
     base_url="https://api.sync.so",
@@ -10,6 +12,9 @@ client = Sync(
 ).generations
 
 def generate_lipsync(audio_file, face_file=AVATAR_FACE):
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    output_path = os.path.join(OUTPUT_DIR, filename)
+
     # Make sure both files are accessible via HTTP
     audio_url = f"http://localhost:8000/{audio_file}"
     video_url = f"http://localhost:8000/{face_file}"
@@ -37,8 +42,8 @@ def generate_lipsync(audio_file, face_file=AVATAR_FACE):
         status = generation.status
 
     if status == "COMPLETED":
-        print(f"Video completed: {generation.output_url}")
-        return generation.output_url
+        print(f"Video completed: {generation.output_path}")
+        return generation.output_path
     else:
         print(f"Generation failed for job {job_id}")
         return None

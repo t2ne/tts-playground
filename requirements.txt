@@ -5,3 +5,4 @@ sounddevice
 numpy
 piper-tts
 soundfile
+requests

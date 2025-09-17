@@ -55,6 +55,7 @@ syncsdk
 numpy
 soundfile
 sounddevice
+requests
 ```
 
 ## Download Vosk Model
