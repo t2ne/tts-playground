@@ -37,8 +37,8 @@ def generate_lipsync(audio_file, face_file=AVATAR_FACE):
         status = generation.status
 
     if status == "COMPLETED":
-        print(f"✅ Video completed: {generation.output_url}")
+        print(f"Video completed: {generation.output_url}")
         return generation.output_url
     else:
-        print(f"❌ Generation failed for job {job_id}")
+        print(f"Generation failed for job {job_id}")
         return None

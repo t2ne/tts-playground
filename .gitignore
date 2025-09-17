@@ -2,3 +2,7 @@ __pycache__/
 *.pyc
 venv/
 .env
+output/
+DS_Store
+vosk-model-small-pt-0.3/
+models/

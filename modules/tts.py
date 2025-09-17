@@ -17,5 +17,5 @@ def speak(text, output_file="output.wav"):
     if os.path.getsize(output_file) == 0:
         raise RuntimeError("⚠️ Piper produced empty audio.")
 
-    print(f"✅ Audio generated at {output_file}, size: {os.path.getsize(output_file)} bytes")
+    print(f"Audio generated at {output_file}, size: {os.path.getsize(output_file)} bytes")
     return output_file
