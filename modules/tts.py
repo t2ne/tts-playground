@@ -1,29 +1,21 @@
-from piper import PiperVoice
-import numpy as np
-import soundfile as sf
+import subprocess
 import os
 from config import PIPER_VOICE
 
-voice = PiperVoice.load(PIPER_VOICE)
-
 def speak(text, output_file="output.wav"):
-    audio_gen = voice.synthesize(text)
+    # Piper CLI requires -m for model path
+    cmd = [
+        "piper",
+        "-m", PIPER_VOICE,      # <- model path
+        "-t", text,             # <- text to speak
+        "-f", output_file        # <- output WAV file
+    ]
+    result = subprocess.run(cmd, capture_output=True)
+    if result.returncode != 0:
+        raise RuntimeError(f"Piper CLI failed:\n{result.stderr.decode()}")
 
-    # Ensure generator produces audio
-    audio_list = []
-    try:
-        for chunk in audio_gen:
-            if chunk is not None:
-                audio_list.append(chunk)
-    except Exception as e:
-        raise RuntimeError(f"Piper synthesis failed: {e}")
+    if os.path.getsize(output_file) == 0:
+        raise RuntimeError("⚠️ Piper produced empty audio.")
 
-    if not audio_list:
-        raise RuntimeError("⚠️ Piper did not produce any audio. Check your voice model or OS compatibility.")
-
-    audio_array = np.concatenate(audio_list)
-    audio_int16 = np.int16(audio_array * 32767)
-
-    sf.write(output_file, audio_int16, voice.sample_rate, subtype='PCM_16')
     print(f"✅ Audio generated at {output_file}, size: {os.path.getsize(output_file)} bytes")
     return output_file
