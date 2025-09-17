@@ -10,4 +10,4 @@ SYNC_API_KEY = os.getenv("SYNCSO")
 PIPER_VOICE = "voices/pt_PT-tuga-medium.onnx"
 
 # Face image/video path
-AVATAR_FACE = "media/face.jpg"  # or .mp4 if you have a neutral video
+AVATAR_FACE = "photos/face.jpg"  # or .mp4 if you have a neutral video
