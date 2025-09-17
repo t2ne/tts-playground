@@ -4,18 +4,19 @@ from sync.common import Audio, GenerationOptions, Video
 from sync.core.api_error import ApiError
 from config import SYNC_API_KEY, AVATAR_FACE, OUTPUT_DIR
 import os
-import requests
+import requests  # necessário para baixar o vídeo
 
 client = Sync(
     base_url="https://api.sync.so",
     api_key=SYNC_API_KEY
 ).generations
 
-def generate_lipsync(audio_file, face_file=AVATAR_FACE):
+def generate_lipsync(audio_file, face_file=AVATAR_FACE, filename="output.mp4"):
+    # cria a pasta OUTPUT_DIR se não existir
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     output_path = os.path.join(OUTPUT_DIR, filename)
 
-    # Make sure both files are accessible via HTTP
+    # URLs locais para teste (ou podes fazer upload para Sync.so)
     audio_url = f"http://localhost:8000/{audio_file}"
     video_url = f"http://localhost:8000/{face_file}"
 
@@ -42,8 +43,12 @@ def generate_lipsync(audio_file, face_file=AVATAR_FACE):
         status = generation.status
 
     if status == "COMPLETED":
-        print(f"Video completed: {generation.output_path}")
-        return generation.output_path
+        # baixa o vídeo para OUTPUT_DIR
+        r = requests.get(generation.output_url)
+        with open(output_path, "wb") as f:
+            f.write(r.content)
+        print(f"✅ Lipsynced video saved at {output_path}")
+        return output_path
     else:
-        print(f"Generation failed for job {job_id}")
+        print(f"❌ Generation failed for job {job_id}")
         return None
