@@ -1,0 +1,6 @@
+python-dotenv
+syncsdk
+vosk
+sounddevice
+numpy
+piper-tts
