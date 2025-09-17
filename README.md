@@ -15,20 +15,28 @@ The workflow:
 
 ## Project Structure
 ```
-tts/
+tts-playground/
+│
 ├── main.py
 ├── config.py      
 ├── requirements.txt  
 ├── .gitignore
+│
 ├── modules/
 │   ├── stt.py
 │   ├── tts.py      
 │   └── lipsync.py
-├── photos/
-│   └── face.jpg
-└── voices/
-    ├── pt_PT-tuga-medium.onnx
-    └── pt_PT-tuga-medium.onnx.json
+│
+├── media/
+│   ├── photos/  
+│   │   └── face.jpg
+│   └── voices/
+│       ├── sample/
+│       │   └── speaker_0.mp
+│       ├── pt_PT-tuga-medium.onnx
+│       └── pt_PT-tuga-medium.onnx.json
+│
+└── .env
 ```
 
 
@@ -64,12 +72,15 @@ unzip vosk-model-small-pt-0.3.zip -d models/
 ## Configuration
 Edit `config.py`:
 ```python
-SYNC_API_KEY = 'YOUR_SYNC_SO_API_KEY'
 PIPER_VOICE = 'voices/pt_PT-tuga-medium.onnx'
 AVATAR_FACE = 'media/face.jpg'
 VOSK_MODEL_PATH = "models/vosk-model-small-pt-0.3"
 ```
 
+Add `.env`:
+```python
+SYNCSO=your_api_key
+```
 
 ## Running the Project
 ```bash
