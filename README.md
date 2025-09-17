@@ -1,5 +1,7 @@
 # TTS + Lipsync Avatar Project
 
+## ⚠️ *Talking face Output + Video and Audio merge not Implemented*
+
 ## Overview
 This project creates a talking avatar from a single face image using:
 - **Vosk** for speech-to-text (STT)
@@ -42,9 +44,17 @@ tts-playground/
 
 ## Requirements
 ```bash
+# To create (first time only)
 python3 -m venv venv
+
+# Returning
 source venv/bin/activate
+
+#Install requirements
 pip install -r requirements.txt
+
+#Quit the venv
+deactivate
 ```
 
 **Requirements.txt should include:**
@@ -73,8 +83,8 @@ unzip vosk-model-small-pt-0.3.zip -d models/
 ## Configuration
 Edit `config.py`:
 ```python
-PIPER_VOICE = 'voices/pt_PT-tuga-medium.onnx'
-AVATAR_FACE = 'media/face.jpg'
+PIPER_VOICE = 'media/voices/pt_PT-tuga-medium.onnx'
+AVATAR_FACE = 'media/photos/face.jpg'
 VOSK_MODEL_PATH = "models/vosk-model-small-pt-0.3"
 ```
 
