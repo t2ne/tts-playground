@@ -24,15 +24,14 @@ python setup/setup.py --verify
 2. ✅ **Clones Wav2Lip repository**
 3. ✅ **Fixes librosa compatibility** issues
 4. ✅ **Downloads Vosk Portuguese model**
-5. ✅ **Sets up checkpoint directory** with instructions
+5. ✅ **Downloads wav2lip_gan.pth** (~400MB) from Hugging Face
 6. ✅ **Installs additional dependencies** (face-recognition, dlib)
 7. ✅ **Verifies complete setup**
 
 ## Manual steps still needed:
 
-After running setup, you still need to:
+After running setup, you only need to:
 
-- 📥 **Download wav2lip_gan.pth** (~400MB) to `Wav2Lip/checkpoints/`
 - 📸 **Add your face photo** to `media/photos/face.jpg`
 
 Then you're ready to run: `python main.py` 🚀

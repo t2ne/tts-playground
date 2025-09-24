@@ -3,8 +3,6 @@ import os
 
 load_dotenv()
 
-SYNC_API_KEY = os.getenv("SYNCSO")
-
 OUTPUT_DIR = "output/"
 
 # --- Substitue with your own config, if u want ---

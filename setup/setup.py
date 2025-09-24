@@ -124,8 +124,8 @@ class TTSSetup:
             print(f"❌ Error applying fix: {e}")
             return False
 
-    def setup_checkpoint_directory(self):
-        """Setup checkpoint directory"""
+    def download_wav2lip_checkpoint(self):
+        """Download Wav2Lip checkpoint from Hugging Face"""
         checkpoint_dir = self.wav2lip_dir / "checkpoints"
         checkpoint_dir.mkdir(parents=True, exist_ok=True)
         
@@ -134,18 +134,40 @@ class TTSSetup:
             print(f"✅ Checkpoint already exists ({size_mb}MB)")
             return True
         
-        print("\n📋 CHECKPOINT DOWNLOAD REQUIRED:")
-        print("-" * 40)
-        print("The Wav2Lip model checkpoint is required for advanced lip sync.")
-        print(f"Please download 'wav2lip_gan.pth' (~400MB) and place it at:")
-        print(f"📁 {self.checkpoint_path}")
-        print("\n🔍 Download sources:")
-        print("• GitHub: search 'wav2lip_gan.pth'")
-        print("• Hugging Face: model repositories")
-        print("• Your project releases (recommended)")
-        print("\n⚠️  Without this file, only basic video generation will work.")
+        print("� Downloading Wav2Lip checkpoint from Hugging Face...")
+        checkpoint_url = "https://huggingface.co/Nekochu/Wav2Lip/resolve/fb925b05f0d353850ee0c56810e4545e274e2b5a/wav2lip_gan.pth"
         
-        return False
+        try:
+            import requests
+            response = requests.get(checkpoint_url, stream=True)
+            response.raise_for_status()
+            
+            total_size = int(response.headers.get('content-length', 0))
+            downloaded = 0
+            
+            print(f"📦 Downloading {total_size // (1024*1024)}MB...")
+            
+            with open(self.checkpoint_path, 'wb') as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    if chunk:
+                        f.write(chunk)
+                        downloaded += len(chunk)
+                        if total_size > 0:
+                            percent = (downloaded / total_size) * 100
+                            print(f"\r📥 Progress: {percent:.1f}%", end='', flush=True)
+            
+            print(f"\n✅ Checkpoint downloaded successfully!")
+            size_mb = self.checkpoint_path.stat().st_size // (1024 * 1024)
+            print(f"📊 File size: {size_mb}MB")
+            return True
+            
+        except Exception as e:
+            print(f"\n❌ Failed to download checkpoint: {e}")
+            print("\n📋 Manual download fallback:")
+            print(f"Please download manually from:")
+            print(f"🔗 {checkpoint_url}")
+            print(f"📁 Save as: {self.checkpoint_path}")
+            return False
 
     def install_additional_deps(self):
         """Install additional Wav2Lip dependencies"""
@@ -248,8 +270,8 @@ class TTSSetup:
             print("❌ Failed to apply compatibility fixes")
             return False
         
-        # Setup checkpoint directory
-        checkpoint_ready = self.setup_checkpoint_directory()
+        # Download checkpoint
+        checkpoint_ready = self.download_wav2lip_checkpoint()
         
         # Install additional dependencies
         self.install_additional_deps()
@@ -288,7 +310,7 @@ def main():
             setup.print_header("Wav2Lip Setup Only")
             setup.clone_wav2lip()
             setup.fix_wav2lip_compatibility()
-            setup.setup_checkpoint_directory()
+            setup.download_wav2lip_checkpoint()
         elif sys.argv[1] == "--verify":
             setup.verify_setup()
         else:

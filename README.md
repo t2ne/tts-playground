@@ -89,6 +89,7 @@ opencv-python
 librosa==0.9.2
 tqdm
 numba
+requests
 ```
 
 ## FFmpeg Dependency
