@@ -67,10 +67,10 @@ python3 -m venv venv
 # Returning
 source venv/bin/activate
 
-#Install requirements
+# Install requirements
 pip install -r requirements.txt
 
-#Quit the venv
+# Quit the venv
 deactivate
 ```
 
@@ -83,6 +83,12 @@ sounddevice
 numpy
 piper-tts
 imageio-ffmpeg
+torch
+torchvision
+opencv-python
+librosa==0.9.2
+tqdm
+numba
 ```
 
 ## FFmpeg Dependency
@@ -149,18 +155,20 @@ python main.py
 - **Portuguese Support**: Optimized for European Portuguese (pt_PT) but can work with other languages.
 - **Cross-Platform**: Works on macOS, Linux, and Windows.
 
-## Current Limitations
+## Current Features
 
-- **Basic Video**: Currently creates a static image video with audio. True lip-sync animation is not yet implemented.
-- **Single Face**: Works with one face image at a time.
-- **Portuguese Focus**: Optimized for Portuguese speech recognition and TTS.
+- **Advanced Lip Sync**: Real lip-sync animation using Wav2Lip AI technology
+- **Fallback System**: Basic video generation if Wav2Lip checkpoint unavailable
+- **Single Face**: Works with one face image at a time
+- **Portuguese Focus**: Optimized for Portuguese speech recognition and TTS
 
 ## Future Enhancements
 
-- Implement real lip-sync animation using Wav2Lip or similar technologies
 - Add support for multiple languages
+- Multiple face/avatar options
 - Web interface for easier use
 - Real-time processing capabilities
+- GPU acceleration optimization
 
 ## References
 
