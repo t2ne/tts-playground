@@ -11,7 +11,7 @@ from pathlib import Path
 
 class TTSSetup:
     def __init__(self):
-        self.project_root = Path(__file__).parent.parent
+        self.project_root = Path(__file__).parent
         self.wav2lip_dir = self.project_root / "Wav2Lip"
         self.checkpoint_path = self.wav2lip_dir / "checkpoints" / "wav2lip_gan.pth"
         
@@ -169,19 +169,7 @@ class TTSSetup:
             print(f"📁 Save as: {self.checkpoint_path}")
             return False
 
-    def install_additional_deps(self):
-        """Install additional Wav2Lip dependencies"""
-        print("📦 Installing additional Wav2Lip dependencies...")
-        
-        additional_deps = ["face-recognition", "dlib"]
-        
-        for dep in additional_deps:
-            print(f"Installing {dep}...")
-            success = self.run_command(f"pip install {dep}")
-            if not success:
-                print(f"⚠️  Failed to install {dep} (may not be critical)")
-        
-        return True
+
 
     def download_vosk_model(self):
         """Download Vosk Portuguese model"""
@@ -272,9 +260,6 @@ class TTSSetup:
         
         # Download checkpoint
         checkpoint_ready = self.download_wav2lip_checkpoint()
-        
-        # Install additional dependencies
-        self.install_additional_deps()
         
         # Download Vosk model
         self.print_header("Step 3: Language Models")

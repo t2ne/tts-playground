@@ -19,18 +19,22 @@ git clone https://github.com/t2ne/tts-playground.git
 
 cd tts-playground
 
+# Do to create the venv (only once)
 python3 -m venv venv
 
+# Do this to enter the venv in the terminal everytime u want to use the project
 source venv/bin/activate  # Windows: venv\Scripts\activate
 
-# One-command setup (installs everything)
-python setup/setup.py
+# One-time command setup (installs everything)
+python setup.py
 
 # Run the application
 python main.py
 ```
 
 That's it! 🎉
+
+It is noted that you still need to have the ffmpeg dependency on your machine. More information on how to install it below.
 
 ## Project Structure
 
@@ -59,20 +63,6 @@ tts-playground/
 ```
 
 ## Requirements
-
-```bash
-# To create (first time only)
-python3 -m venv venv
-
-# Returning
-source venv/bin/activate
-
-# Install requirements
-pip install -r requirements.txt
-
-# Quit the venv
-deactivate
-```
 
 **Requirements.txt includes:**
 
@@ -114,7 +104,7 @@ sudo apt update && sudo apt install ffmpeg
 If system FFmpeg is not available, the project automatically uses `imageio-ffmpeg` (included in requirements.txt).
 This works out-of-the-box but may be slower for large files.
 
-## Download Vosk Model
+## Download Vosk Model (Done on Setup by Default)
 
 Download the Portuguese small model and place it under `models/`:
 
