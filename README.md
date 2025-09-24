@@ -1,19 +1,36 @@
-# TTS + Lipsync Avatar Project
+# 🎭 Portuguese TTS Avatar with Lip Sync
 
-## Overview
+A complete Portuguese text-to-speech system with realistic lip synchronization using AI-powered face animation.
 
-This project creates a talking avatar from a single face image using:
+## ✨ Features
 
-- **Vosk** for speech-to-text (STT)
-- **Piper** for text-to-speech (TTS)
-- **FFmpeg** for video generation with audio sync
+- 🎤 **Real-time Speech Recognition** (Portuguese) - Vosk
+- 🗣️ **Natural Voice Synthesis** (Portuguese) - Piper TTS
+- 🎭 **Advanced Lip Synchronization** - Wav2Lip AI
+- 🎬 **Automatic Video Generation** - FFmpeg
+- 🔄 **Intelligent Fallback System** - Works even without AI models
+- 🌐 **100% Local Processing** - No external APIs required
 
-The workflow:
+## 🚀 Quick Setup
 
-1. User speaks into the microphone.
-2. Vosk transcribes speech to text.
-3. Piper generates a WAV audio file.
-4. FFmpeg creates an MP4 video combining the face image with the audio.
+```bash
+# Clone and setup everything automatically
+git clone https://github.com/t2ne/tts-playground.git
+
+cd tts-playground
+
+python3 -m venv venv
+
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
+# One-command setup (installs everything)
+python setup/setup.py
+
+# Run the application
+python main.py
+```
+
+That's it! 🎉
 
 ## Project Structure
 

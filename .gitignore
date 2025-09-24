@@ -1,8 +1,36 @@
+# Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.Python
 venv/
+env/
 .env
+
+# Project outputs
 output/
+*.wav
+*.mp4
+
+# System files
 .DS_Store
-vosk-model-small-pt-0.3/
+Thumbs.db
+
+# Models and large files (downloaded automatically)
 models/
+vosk-model-small-pt-0.3/
+
+# Wav2Lip (cloned and setup automatically)
+Wav2Lip/
+wav2lip_gan.pth
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+temp/
+tmp/
