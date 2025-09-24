@@ -30,6 +30,9 @@ python setup.py
 
 # Run the application
 python main.py
+
+#To close the venv
+deactivate
 ```
 
 That's it! 🎉
