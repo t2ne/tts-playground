@@ -1,54 +1,38 @@
-import time
-from sync import Sync
-from sync.common import Audio, GenerationOptions, Video
-from sync.core.api_error import ApiError
-from config import SYNC_API_KEY, AVATAR_FACE, OUTPUT_DIR
 import os
-import requests  # necessário para baixar o vídeo
-
-client = Sync(
-    base_url="https://api.sync.so",
-    api_key=SYNC_API_KEY
-).generations
+import subprocess
+from config import AVATAR_FACE, OUTPUT_DIR
 
 def generate_lipsync(audio_file, face_file=AVATAR_FACE, filename="output.mp4"):
-    # cria a pasta OUTPUT_DIR se não existir
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     output_path = os.path.join(OUTPUT_DIR, filename)
-
-    # URLs locais para teste (ou podes fazer upload para Sync.so)
-    audio_url = f"http://localhost:8000/{audio_file}"
-    video_url = f"http://localhost:8000/{face_file}"
-
-    print("Starting lip sync generation job...")
-    try:
-        response = client.create(
-            input=[Video(url=video_url), Audio(url=audio_url)],
-            model="lipsync-2",
-            options=GenerationOptions(sync_mode="cut_off")
-        )
-    except ApiError as e:
-        print(f"Request failed: {e.status_code}, {e.body}")
+    
+    if not os.path.exists(face_file) or not os.path.exists(audio_file):
+        print(f"❌ Missing files: {face_file} or {audio_file}")
         return None
-
-    job_id = response.id
-    print(f"Generation submitted successfully, job id: {job_id}")
-
-    generation = client.get(job_id)
-    status = generation.status
-    while status not in ["COMPLETED", "FAILED"]:
-        print(f"Polling status for job {job_id}...")
-        time.sleep(10)
-        generation = client.get(job_id)
-        status = generation.status
-
-    if status == "COMPLETED":
-        # baixa o vídeo para OUTPUT_DIR
-        r = requests.get(generation.output_url)
-        with open(output_path, "wb") as f:
-            f.write(r.content)
-        print(f"✅ Lipsynced video saved at {output_path}")
+    
+    print(f"🎬 Creating video: {audio_file} + {face_file} → {output_path}")
+    
+    cmd = [
+        'ffmpeg', '-y', '-loop', '1', '-i', face_file, '-i', audio_file,
+        '-vf', 'scale=trunc(iw/2)*2:trunc(ih/2)*2',
+        '-c:v', 'libx264', '-tune', 'stillimage', '-c:a', 'aac', '-b:a', '128k',
+        '-pix_fmt', 'yuv420p', '-shortest', output_path
+    ]
+    
+    try:
+        subprocess.run(cmd, capture_output=True, text=True, check=True)
+        print(f"✅ Video created: {output_path}")
         return output_path
-    else:
-        print(f"❌ Generation failed for job {job_id}")
+    except FileNotFoundError:
+        try:
+            import imageio_ffmpeg as ffmpeg
+            cmd[0] = ffmpeg.get_ffmpeg_exe()
+            subprocess.run(cmd, capture_output=True, text=True, check=True)
+            print(f"✅ Video created: {output_path}")
+            return output_path
+        except Exception as e:
+            print(f"❌ FFmpeg error: {e}")
+            return None
+    except subprocess.CalledProcessError as e:
+        print(f"❌ FFmpeg failed: {e.stderr}")
         return None
