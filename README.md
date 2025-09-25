@@ -1,17 +1,17 @@
-# 🎭 Portuguese TTS Avatar with Lip Sync
+# 🌐 TTS Avatar with Lip Sync
 
-A complete Portuguese text-to-speech system with realistic lip synchronization using AI-powered face animation.
+A complete text-to-speech system with realistic lip synchronization using AI-powered face animation.
 
-## ✨ Features
+## Features
 
-- 🎤 **Real-time Speech Recognition** (Portuguese) - Vosk
-- 🗣️ **Natural Voice Synthesis** (Portuguese) - Piper TTS
-- 🎭 **Advanced Lip Synchronization** - Wav2Lip AI
-- 🎬 **Automatic Video Generation** - FFmpeg
-- 🔄 **Intelligent Fallback System** - Works even without AI models
-- 🌐 **100% Local Processing** - No external APIs required
+- **Real-time Speech Recognition** - Vosk
+- **Natural Voice Synthesis** - Piper TTS
+- **Advanced Lip Synchronization** - Wav2Lip AI
+- **Automatic Video Generation** - FFmpeg
+- **Intelligent Fallback System** - Works even without AI models
+- **100% Local Processing** - No external APIs required
 
-## 🚀 Quick Setup
+## Setup
 
 ```bash
 # Clone and setup everything automatically
@@ -35,7 +35,7 @@ python main.py
 deactivate
 ```
 
-That's it! 🎉
+That's it!
 
 It is noted that you still need to have the ffmpeg dependency on your machine. More information on how to install it below.
 
@@ -109,7 +109,7 @@ This works out-of-the-box but may be slower for large files.
 
 ## Download Vosk Model (Done on Setup by Default)
 
-Download the Portuguese small model and place it under `models/`:
+Download the small model and place it under `models/`:
 
 ```bash
 # Using wget
@@ -163,6 +163,10 @@ python main.py
 - Web interface for easier use
 - Real-time processing capabilities
 - GPU acceleration optimization
+
+## Author
+
+- [t2ne](https://github.com/t2ne)
 
 ## References
 
