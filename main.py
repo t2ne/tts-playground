@@ -1,4 +1,4 @@
-from modules import stt, tts, lipsync
+from backend.modules import stt, tts, lipsync
 
 if __name__ == "__main__":
     user_text = stt.transcribe()

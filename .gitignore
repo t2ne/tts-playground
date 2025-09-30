@@ -25,6 +25,8 @@ vosk-model-small-pt-0.3/
 Wav2Lip/
 wav2lip_gan.pth
 
+extras/
+
 # IDE
 .vscode/
 .idea/

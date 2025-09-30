@@ -12,7 +12,7 @@ from pathlib import Path
 class TTSSetup:
     def __init__(self):
         self.project_root = Path(__file__).parent
-        self.wav2lip_dir = self.project_root / "Wav2Lip"
+        self.wav2lip_dir = self.project_root / "backend" / "extras" / "Wav2Lip"
         self.checkpoint_path = self.wav2lip_dir / "checkpoints" / "wav2lip_gan.pth"
         
     def print_header(self, title):
@@ -78,7 +78,11 @@ class TTSSetup:
             return True
         
         print("Cloning Wav2Lip repository...")
-        success = self.run_command("git clone https://github.com/Rudrabha/Wav2Lip.git")
+        # Create the backend/extras directory first
+        self.wav2lip_dir.parent.mkdir(parents=True, exist_ok=True)
+        
+        # Clone to the correct directory
+        success = self.run_command(f"git clone https://github.com/Rudrabha/Wav2Lip.git {self.wav2lip_dir}")
         
         if success:
             print("Wav2Lip cloned successfully")
@@ -134,7 +138,7 @@ class TTSSetup:
             print(f"Checkpoint already exists ({size_mb}MB)")
             return True
         
-        print("� Downloading Wav2Lip checkpoint from Hugging Face...")
+        print("Downloading Wav2Lip checkpoint from Hugging Face...")
         checkpoint_url = "https://huggingface.co/Nekochu/Wav2Lip/resolve/fb925b05f0d353850ee0c56810e4545e274e2b5a/wav2lip_gan.pth"
         
         try:
@@ -173,7 +177,7 @@ class TTSSetup:
 
     def download_vosk_model(self):
         """Download Vosk model"""
-        models_dir = self.project_root / "models"
+        models_dir = self.project_root / "backend" / "extras" / "models"
         model_dir = models_dir / "vosk-model-small-pt-0.3"
         
         if model_dir.exists():
@@ -181,7 +185,7 @@ class TTSSetup:
             return True
         
         print("Downloading Vosk model...")
-        models_dir.mkdir(exist_ok=True)
+        models_dir.mkdir(parents=True, exist_ok=True)
         
         # Try to download
         download_url = "https://alphacephei.com/vosk/models/vosk-model-small-pt-0.3.zip"
@@ -203,6 +207,51 @@ class TTSSetup:
         print(f"2. Extract to: {models_dir}")
         return False
 
+    def download_piper_voices(self):
+        """Download Piper voice models"""
+        voices_dir = self.project_root / "backend" / "extras" / "voices"
+        voices_dir.mkdir(parents=True, exist_ok=True)
+        
+        onnx_file = voices_dir / "pt_PT-tuga-medium.onnx"
+        json_file = voices_dir / "pt_PT-tuga-medium.onnx.json"
+        
+        if onnx_file.exists() and json_file.exists():
+            print("Piper voice models already downloaded")
+            return True
+        
+        print("Downloading Piper voice models...")
+        
+        # Download URLs
+        onnx_url = "https://huggingface.co/rhasspy/piper-voices/resolve/main/pt/pt_PT/tug%C3%A3o/medium/pt_PT-tug%C3%A3o-medium.onnx"
+        json_url = "https://huggingface.co/rhasspy/piper-voices/resolve/main/pt/pt_PT/tug%C3%A3o/medium/pt_PT-tug%C3%A3o-medium.onnx.json"
+        
+        success = True
+        
+        # Download ONNX file
+        if not onnx_file.exists():
+            print("Downloading ONNX model...")
+            onnx_success = self.run_command(f"curl -L -o {onnx_file} '{onnx_url}'", "Downloading ONNX model")
+            if not onnx_success:
+                success = False
+        
+        # Download JSON config file
+        if not json_file.exists():
+            print("Downloading JSON config...")
+            json_success = self.run_command(f"curl -L -o {json_file} '{json_url}'", "Downloading JSON config")
+            if not json_success:
+                success = False
+        
+        if success and onnx_file.exists() and json_file.exists():
+            print("Piper voice models downloaded successfully")
+            return True
+        else:
+            print("Failed to download Piper voice models")
+            print("Please download manually:")
+            print(f"1. ONNX: {onnx_url}")
+            print(f"2. JSON: {json_url}")
+            print(f"3. Save to: {voices_dir}")
+            return False
+
     def verify_setup(self):
         """Verify the complete setup"""
         self.print_header("Verifying Setup")
@@ -210,9 +259,9 @@ class TTSSetup:
         checks = [
             ("Python dependencies", self.project_root / "requirements.txt"),
             ("Wav2Lip repository", self.wav2lip_dir),
-            ("Vosk model", self.project_root / "models" / "vosk-model-small-pt-0.3"),
-            ("TTS voice model", self.project_root / "media" / "voices"),
-            ("Avatar image", self.project_root / "media" / "photos" / "face.jpg"),
+            ("Vosk model", self.project_root / "backend" / "extras" / "models" / "vosk-model-small-pt-0.3"),
+            ("TTS voice models", self.project_root / "backend" / "extras" / "voices"),
+            ("Avatar image", self.project_root / "frontend" / "media" / "photos" / "face.jpg"),
         ]
         
         all_good = True
@@ -226,9 +275,9 @@ class TTSSetup:
         # Check checkpoint separately
         if self.checkpoint_path.exists():
             size_mb = self.checkpoint_path.stat().st_size // (1024 * 1024)
-            print(f"Wav2Lip checkpoint ({size_mb}MB)")
+            print(f"✅ Wav2Lip checkpoint ({size_mb}MB)")
         else:
-            print(f"Wav2Lip checkpoint - Optional: {self.checkpoint_path}")
+            print(f"❌ Wav2Lip checkpoint - Optional: {self.checkpoint_path}")
             print("   (Basic video generation will work without this)")
         
         return all_good
@@ -261,9 +310,10 @@ class TTSSetup:
         # Download checkpoint
         checkpoint_ready = self.download_wav2lip_checkpoint()
         
-        # Download Vosk model
+        # Download models
         self.print_header("Step 3: Language Models")
         self.download_vosk_model()
+        self.download_piper_voices()
         
         # Verify setup
         setup_complete = self.verify_setup()

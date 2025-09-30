@@ -47,22 +47,31 @@ tts-playground/
 ├── main.py
 ├── config.py
 ├── requirements.txt
+├── setup.py
 ├── .gitignore
 ├── README.md
 │
-├── modules/
-│   ├── stt.py
-│   ├── tts.py
-│   └── lipsync.py
+├── backend/
+│   ├── modules/
+│   │   ├── __init__.py
+│   │   ├── stt.py
+│   │   ├── tts.py
+│   │   └── lipsync.py
+│   └── extras/
+│       ├── models/
+│       │   └── vosk-model-small-pt-0.3/
+│       ├── voices/
+│       │   ├── pt_PT-tuga-medium.onnx
+│       │   └── pt_PT-tuga-medium.onnx.json
+│       └── Wav2Lip/
 │
-└── media/
-    ├── photos/
-    │   └── face.jpg
-    └── voices/
-        ├── sample/
-        │   └── speaker_0.mp
-        ├── pt_PT-tuga-medium.onnx
-        └── pt_PT-tuga-medium.onnx.json
+├── frontend/
+│   ├── gradio.py
+│   └── media/
+│       └── photos/
+│           └── face.jpg
+│
+└── output/
 ```
 
 ## Requirements
@@ -83,6 +92,7 @@ librosa==0.9.2
 tqdm
 numba
 requests
+gradio
 ```
 
 ## FFmpeg Dependency

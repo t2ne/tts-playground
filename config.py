@@ -7,8 +7,8 @@ OUTPUT_DIR = "output/"
 
 # --- Substitue with your own config, if u want ---
 
-PIPER_VOICE = "media/voices/pt_PT-tuga-medium.onnx"
+PIPER_VOICE = "backend/extras/voices/pt_PT-tuga-medium.onnx"
 
-AVATAR_FACE = "media/photos/face.jpg"
+AVATAR_FACE = "frontend/media/photos/face.jpg"
 
-VOSK_MODEL_PATH = "models/vosk-model-small-pt-0.3"
+VOSK_MODEL_PATH = "backend/extras/models/vosk-model-small-pt-0.3"
