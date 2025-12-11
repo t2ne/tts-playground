@@ -38,11 +38,11 @@ def main():
     if video_path:
         print(f"Video created: {video_path}")
         # Remove intermediate audio file
-        try:
-            if os.path.exists(audio_file):
-                os.remove(audio_file)
-        except OSError:
-            pass
+        #try:
+            #if os.path.exists(audio_file):
+                #os.remove(audio_file)
+        #except OSError:
+            #pass
     else:
         print("Failed to create video")
 
