@@ -3,7 +3,6 @@ vosk
 sounddevice
 numpy
 piper-tts
-imageio-ffmpeg
 ffmpeg-python
 torch
 torchvision

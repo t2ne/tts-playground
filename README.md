@@ -19,11 +19,11 @@ git clone https://github.com/t2ne/tts-playground.git
 
 cd tts-playground
 
-# Do to create the venv (only once)
-python3 -m venv venv
+# Create the venv (only once)
+python3 -m venv .venv
 
-# Do this to enter the venv in the terminal everytime u want to use the project
-source venv/bin/activate  # Windows: venv\Scripts\activate
+# Enter the venv in the terminal every time you want to use the project
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
 
 # One-time command setup (installs everything)
 python setup.py
@@ -37,7 +37,7 @@ deactivate
 
 That's it!
 
-It is noted that you still need to have the ffmpeg dependency on your machine. More information on how to install it below.
+Note: you must have the FFmpeg system dependency installed on your machine. More information on how to install it below.
 
 ## Project Structure
 
@@ -60,9 +60,13 @@ tts-playground/
 │   └── extras/
 │       ├── models/
 │       │   └── vosk-model-small-pt-0.3/
+│       ├── photos/
+│       │   └── face,jpg
 │       ├── voices/
-│       │   ├── pt_PT-tuga-medium.onnx
-│       │   └── pt_PT-tuga-medium.onnx.json
+│       │   ├── pt_PT-tugao-medium.onnx
+│       │   ├── pt_PT-tugao-medium.onnx.json
+│       │   ├── dii_pt-PT.onnx
+│       │   └── dii_pt-PT.onnx.json
 │       └── Wav2Lip/
 │
 └── output/
@@ -70,7 +74,7 @@ tts-playground/
 
 ## Requirements
 
-**Requirements.txt includes:**
+**requirements.txt includes (simplified):**
 
 ```
 python-dotenv
@@ -78,7 +82,7 @@ vosk
 sounddevice
 numpy
 piper-tts
-imageio-ffmpeg
+ffmpeg-python
 torch
 torchvision
 opencv-python
@@ -86,14 +90,12 @@ librosa==0.9.2
 tqdm
 numba
 requests
-gradio
 ```
 
 ## FFmpeg Dependency
 
-This project requires FFmpeg for video processing. You have two options:
-
-### Option 1: System FFmpeg (Recommended - Faster)
+This project requires FFmpeg for video processing and lip-sync video muxing.
+You must have FFmpeg installed and available on your PATH:
 
 ```bash
 # macOS
@@ -105,11 +107,6 @@ sudo apt update && sudo apt install ffmpeg
 # Windows
 # Download from https://ffmpeg.org/download.html
 ```
-
-### Option 2: Python FFmpeg (Automatic Fallback)
-
-If system FFmpeg is not available, the project automatically uses `imageio-ffmpeg` (included in requirements.txt).
-This works out-of-the-box but may be slower for large files.
 
 ## Download Vosk Model (Done on Setup by Default)
 
@@ -130,10 +127,14 @@ unzip vosk-model-small-pt-0.3.zip -d models/
 Edit `config.py`:
 
 ```python
-PIPER_VOICE = 'media/voices/pt_PT-tuga-medium.onnx'
-AVATAR_FACE = 'media/photos/face.jpg'
-VOSK_MODEL_PATH = "models/vosk-model-small-pt-0.3"
-OUTPUT_DIR = "output"
+OUTPUT_DIR = "output/"
+
+# Two Piper voices installed by setup.py
+PIPER_VOICE_MALE = "backend/extras/voices/pt_PT-tugao-medium.onnx"
+PIPER_VOICE_FEMALE = "backend/extras/voices/dii_pt-PT.onnx"
+
+AVATAR_FACE = "backend/extras/photos/face.jpg"
+VOSK_MODEL_PATH = "backend/extras/models/vosk-model-small-pt-0.3"
 ```
 
 ## Running the Project
@@ -142,9 +143,13 @@ OUTPUT_DIR = "output"
 python main.py
 ```
 
+- When prompted, choose the voice:
+  - `1` → Male (Tuga)
+  - `2` or Enter → Female (Dii, default)
 - Speak into your microphone when prompted.
-- Piper generates `output/output.wav`.
-- FFmpeg creates `output/output.mp4` with your avatar and synchronized audio.
+- Piper generates `output/output.wav` (temporary).
+- Wav2Lip (if checkpoint is available) or FFmpeg creates `output/output.mp4` with your avatar and synchronized audio.
+- The intermediate WAV file is removed automatically after video creation.
 
 ## Notes
 

@@ -76,21 +76,14 @@ def generate_lipsync_basic(audio_file, face_file=AVATAR_FACE, filename="output.m
         '-c:v', 'libx264', '-tune', 'stillimage', '-c:a', 'aac', '-b:a', '128k',
         '-pix_fmt', 'yuv420p', '-shortest', output_path
     ]
-    
+
     try:
         subprocess.run(cmd, capture_output=True, text=True, check=True)
         print(f"✅ Basic video created: {output_path}")
         return output_path
     except FileNotFoundError:
-        try:
-            import imageio_ffmpeg as ffmpeg
-            cmd[0] = ffmpeg.get_ffmpeg_exe()
-            subprocess.run(cmd, capture_output=True, text=True, check=True)
-            print(f"✅ Basic video created: {output_path}")
-            return output_path
-        except Exception as e:
-            print(f"❌ FFmpeg error: {e}")
-            return None
+        print("❌ FFmpeg not found. Please install ffmpeg and ensure it is in your PATH.")
+        return None
     except subprocess.CalledProcessError as e:
         print(f"❌ FFmpeg failed: {e.stderr}")
         return None
