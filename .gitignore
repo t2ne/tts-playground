@@ -26,7 +26,9 @@ vosk-model-small-pt-0.3/
 Wav2Lip/
 wav2lip_gan.pth
 
-extras/
+backend/extras/models/
+backend/extras/voices/
+backend/extras/Wav2Lip/
 
 # IDE
 .vscode/
