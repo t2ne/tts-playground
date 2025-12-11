@@ -4,6 +4,7 @@ sounddevice
 numpy
 piper-tts
 imageio-ffmpeg
+ffmpeg-python
 torch
 torchvision
 opencv-python
@@ -11,4 +12,3 @@ librosa==0.9.2
 tqdm
 numba
 requests
-gradio==4.25.0

@@ -16,4 +16,8 @@ def transcribe():
             data = q.get()
             if rec.AcceptWaveform(data):
                 result = json.loads(rec.Result())
-                return result.get("text", "")
+                text = result.get("text", "")
+                if text:
+                    return text
+                else:
+                    print("Didn't catch that, try again...")

@@ -212,44 +212,68 @@ class TTSSetup:
         voices_dir = self.project_root / "backend" / "extras" / "voices"
         voices_dir.mkdir(parents=True, exist_ok=True)
         
-        onnx_file = voices_dir / "pt_PT-tuga-medium.onnx"
-        json_file = voices_dir / "pt_PT-tuga-medium.onnx.json"
-        
-        if onnx_file.exists() and json_file.exists():
-            print("Piper voice models already downloaded")
+        # Tuga voice (official Rhasspy model)
+        tuga_onnx = voices_dir / "pt_PT-tugao-medium.onnx"
+        tuga_json = voices_dir / "pt_PT-tugao-medium.onnx.json"
+
+        # Dii voice (OpenVoiceOS model)
+        dii_onnx = voices_dir / "dii_pt-PT.onnx"
+        dii_json = voices_dir / "dii_pt-PT.onnx.json"
+
+        # If all four files exist, nothing to do
+        if all(p.exists() for p in [tuga_onnx, tuga_json, dii_onnx, dii_json]):
+            print("Piper voice models already downloaded (Tuga + Dii)")
             return True
-        
-        print("Downloading Piper voice models...")
-        
+
+        print("Downloading Piper voice models (Tuga + Dii)...")
+
         # Download URLs
-        onnx_url = "https://huggingface.co/rhasspy/piper-voices/resolve/main/pt/pt_PT/tug%C3%A3o/medium/pt_PT-tug%C3%A3o-medium.onnx"
-        json_url = "https://huggingface.co/rhasspy/piper-voices/resolve/main/pt/pt_PT/tug%C3%A3o/medium/pt_PT-tug%C3%A3o-medium.onnx.json"
-        
+        tuga_onnx_url = "https://huggingface.co/rhasspy/piper-voices/resolve/main/pt/pt_PT/tug%C3%A3o/medium/pt_PT-tug%C3%A3o-medium.onnx"
+        tuga_json_url = "https://huggingface.co/rhasspy/piper-voices/resolve/main/pt/pt_PT/tug%C3%A3o/medium/pt_PT-tug%C3%A3o-medium.onnx.json"
+        dii_onnx_url = "https://huggingface.co/OpenVoiceOS/phoonnx_pt-PT_dii_tugaphone/resolve/main/dii_pt-PT.onnx?download=true"
+
         success = True
-        
-        # Download ONNX file
-        if not onnx_file.exists():
-            print("Downloading ONNX model...")
-            onnx_success = self.run_command(f"curl -L -o {onnx_file} '{onnx_url}'", "Downloading ONNX model")
-            if not onnx_success:
+
+        # Download Tuga ONNX
+        if not tuga_onnx.exists():
+            print("Downloading Tuga ONNX model...")
+            tuga_onnx_success = self.run_command(f"curl -L -o {tuga_onnx} '{tuga_onnx_url}'", "Downloading Tuga ONNX model")
+            if not tuga_onnx_success:
                 success = False
-        
-        # Download JSON config file
-        if not json_file.exists():
-            print("Downloading JSON config...")
-            json_success = self.run_command(f"curl -L -o {json_file} '{json_url}'", "Downloading JSON config")
-            if not json_success:
+
+        # Download Tuga JSON config
+        if not tuga_json.exists():
+            print("Downloading Tuga JSON config...")
+            tuga_json_success = self.run_command(f"curl -L -o {tuga_json} '{tuga_json_url}'", "Downloading Tuga JSON config")
+            if not tuga_json_success:
                 success = False
-        
-        if success and onnx_file.exists() and json_file.exists():
-            print("Piper voice models downloaded successfully")
+
+        # Download Dii ONNX
+        if not dii_onnx.exists():
+            print("Downloading Dii ONNX model...")
+            dii_onnx_success = self.run_command(f"curl -L -o {dii_onnx} '{dii_onnx_url}'", "Downloading Dii ONNX model")
+            if not dii_onnx_success:
+                success = False
+
+        # Duplicate Tuga JSON for Dii voice config, as requested
+        if tuga_json.exists() and not dii_json.exists():
+            try:
+                dii_json.write_bytes(tuga_json.read_bytes())
+                print(f"Copied {tuga_json.name} to {dii_json.name}")
+            except Exception as e:
+                print(f"Warning: could not copy {tuga_json.name} to {dii_json.name}: {e}")
+                success = False
+
+        if success and all(p.exists() for p in [tuga_onnx, tuga_json, dii_onnx, dii_json]):
+            print("Piper voice models downloaded successfully (Tuga + Dii)")
             return True
         else:
             print("Failed to download Piper voice models")
             print("Please download manually:")
-            print(f"1. ONNX: {onnx_url}")
-            print(f"2. JSON: {json_url}")
-            print(f"3. Save to: {voices_dir}")
+            print(f"1. Tuga ONNX: {tuga_onnx_url}")
+            print(f"2. Tuga JSON: {tuga_json_url}")
+            print(f"3. Dii ONNX: {dii_onnx_url}")
+            print(f"4. Save to: {voices_dir}")
             return False
 
     def verify_setup(self):
@@ -261,7 +285,7 @@ class TTSSetup:
             ("Wav2Lip repository", self.wav2lip_dir),
             ("Vosk model", self.project_root / "backend" / "extras" / "models" / "vosk-model-small-pt-0.3"),
             ("TTS voice models", self.project_root / "backend" / "extras" / "voices"),
-            ("Avatar image", self.project_root / "frontend" / "media" / "photos" / "face.jpg"),
+            ("Avatar image", self.project_root / "backend" / "extras" / "photos" / "face.jpg"),
         ]
         
         all_good = True

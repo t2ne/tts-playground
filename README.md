@@ -65,12 +65,6 @@ tts-playground/
 │       │   └── pt_PT-tuga-medium.onnx.json
 │       └── Wav2Lip/
 │
-├── frontend/
-│   ├── gradio.py
-│   └── media/
-│       └── photos/
-│           └── face.jpg
-│
 └── output/
 ```
 

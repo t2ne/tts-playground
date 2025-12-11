@@ -1,44 +1,34 @@
-import sys
-import argparse
-from pathlib import Path
-
 from backend.modules import stt, tts, lipsync
+from config import PIPER_VOICE_MALE, PIPER_VOICE_FEMALE
 
-def run_cli():
-    """Run the original CLI version"""
+
+def main():
+    """Run the CLI version by default."""
     print("Running CLI mode...")
+    
+    # Choose voice: 1 = male (Tuga), 2 = female (Dii, default)
+    print("Select voice:")
+    print("  1) Male (Tuga)")
+    print("  2) Female (Dii) [default]")
+    choice = input("Voice (1/2): ").strip()
+
+    if choice == "1":
+        voice_model = PIPER_VOICE_MALE
+        print("Using male voice (Tuga)")
+    else:
+        voice_model = PIPER_VOICE_FEMALE
+        print("Using female voice (Dii)")
     user_text = stt.transcribe()
     print("You said:", user_text)
-    
-    audio_file = tts.speak(user_text)
+
+    audio_file = tts.speak(user_text, voice_model=voice_model)
     video_path = lipsync.generate_lipsync(audio_file)
-    
+
     if video_path:
         print(f"Video created: {video_path}")
     else:
         print("Failed to create video")
 
-def run_web():
-    """Launch the Gradio web interface"""
-    try:
-        from frontend.gradio import launch_interface
-        print("Starting TTS Avatar Web Interface...")
-        launch_interface(share=True, debug=False)
-    except ImportError as e:
-        print(f"Error importing web interface: {e}")
-        sys.exit(1)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="TTS Avatar with Lip Sync")
-    parser.add_argument(
-        "--cli", 
-        action="store_true", 
-        help="Run in CLI mode instead of web interface"
-    )
-    
-    args = parser.parse_args()
-    
-    if args.cli:
-        run_cli()
-    else:
-        run_web()
+    main()
